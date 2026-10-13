@@ -6,7 +6,7 @@ import { useLookups, useStore } from '../lib/store'
 import { FormActividad, FormEntregable, FormHito, FormItemSemana, FormTarea } from './formularios'
 import { Avatar, Badge, BadgePrioridad, Vacio } from './ui'
 
-const COLOR_TIPO: Record<ItemAgenda['tipo'], 'indigo' | 'amber' | 'sky' | 'green' | 'slate'> = {
+export const COLOR_TIPO: Record<ItemAgenda['tipo'], 'indigo' | 'amber' | 'sky' | 'green' | 'slate'> = {
   entregable: 'indigo',
   hito: 'amber',
   tarea: 'sky',
@@ -14,23 +14,10 @@ const COLOR_TIPO: Record<ItemAgenda['tipo'], 'indigo' | 'amber' | 'sky' | 'green
   manual: 'slate',
 }
 
-/** Lista de cosas por hacer: se pueden marcar como hechas y abrir para editar. */
-export function ListaAgenda({
-  items,
-  mostrarProyecto = true,
-  mostrarPersona = true,
-  vacio = 'Nada por aquí.',
-}: {
-  items: ItemAgenda[]
-  mostrarProyecto?: boolean
-  mostrarPersona?: boolean
-  vacio?: string
-}) {
+/** Marca o desmarca como hecho cualquier cosa de la agenda, según su tipo. */
+export function useAlternar() {
   const { db, guardar } = useStore()
-  const { persona, proyecto } = useLookups()
-  const [editando, setEditando] = useState<ItemAgenda | null>(null)
-
-  const alternar = (i: ItemAgenda) => {
+  return (i: ItemAgenda) => {
     const id = i.refId
     if (i.tipo === 'entregable') {
       const x = db.entregables.find((e) => e.id === id)
@@ -49,6 +36,23 @@ export function ListaAgenda({
       if (x) guardar('itemsSemana', { ...x, hecho: !x.hecho })
     }
   }
+}
+
+/** Lista de cosas por hacer: se pueden marcar como hechas y abrir para editar. */
+export function ListaAgenda({
+  items,
+  mostrarProyecto = true,
+  mostrarPersona = true,
+  vacio = 'Nada por aquí.',
+}: {
+  items: ItemAgenda[]
+  mostrarProyecto?: boolean
+  mostrarPersona?: boolean
+  vacio?: string
+}) {
+  const { persona, proyecto } = useLookups()
+  const alternar = useAlternar()
+  const [editando, setEditando] = useState<ItemAgenda | null>(null)
 
   if (items.length === 0) return <Vacio>{vacio}</Vacio>
 
@@ -88,7 +92,7 @@ export function ListaAgenda({
   )
 }
 
-function EditorAgenda({ item, onCerrar }: { item: ItemAgenda; onCerrar: () => void }) {
+export function EditorAgenda({ item, onCerrar }: { item: ItemAgenda; onCerrar: () => void }) {
   const { db } = useStore()
   const pid = item.proyectoId ?? ''
   switch (item.tipo) {

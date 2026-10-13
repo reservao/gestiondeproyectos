@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { ListaAgenda } from '../components/Agenda'
 import { FormItemSemana } from '../components/formularios'
+import { MatrizProyectos } from '../components/MatrizProyectos'
 import { Avatar } from '../components/ui'
 import { agendaSemana, type ItemAgenda } from '../lib/agenda'
 import { fmt, fmtSemana, hoy, lunesDe, sumarDias } from '../lib/fechas'
@@ -21,40 +21,22 @@ export default function Semana() {
   const agenda = useMemo(() => agendaSemana(db, lunes).filter((i) => !soloPendientes || !i.hecho), [db, lunes, soloPendientes])
   const esActual = lunes === lunesDe(hoy())
 
-  const grupos: { id: string | null; titulo: React.ReactNode; items: ItemAgenda[] }[] =
-    vista === 'persona'
-      ? [
-          ...db.personas.map((p) => ({
-            id: p.id,
-            titulo: (
-              <span className="flex items-center gap-2">
-                <Avatar persona={p} size="md" />
-                <span>
-                  {p.nombre}
-                  <span className="block text-xs font-normal text-slate-500">{p.rol}</span>
-                </span>
-              </span>
-            ),
-            items: agenda.filter((i) => i.personaId === p.id),
-          })),
-          { id: null, titulo: <span className="text-slate-500">Sin responsable</span>, items: agenda.filter((i) => !i.personaId) },
-        ]
-      : [
-          ...db.proyectos
-            .filter((p) => p.estado !== 'cerrado')
-            .map((p) => ({
-              id: p.id,
-              titulo: (
-                <Link to={`/proyectos/${p.id}`} className="hover:text-indigo-600">
-                  {p.codigo && <span className="text-slate-400">{p.codigo} · </span>}
-                  {p.nombre}
-                  <span className="block text-xs font-normal text-slate-500">{p.cliente}</span>
-                </Link>
-              ),
-              items: agenda.filter((i) => i.proyectoId === p.id),
-            })),
-          { id: null, titulo: <span className="text-slate-500">General / sin proyecto</span>, items: agenda.filter((i) => !i.proyectoId) },
-        ]
+  const grupos: { id: string | null; titulo: React.ReactNode; items: ItemAgenda[] }[] = [
+    ...db.personas.map((p) => ({
+      id: p.id,
+      titulo: (
+        <span className="flex items-center gap-2">
+          <Avatar persona={p} size="md" />
+          <span>
+            {p.nombre}
+            <span className="block text-xs font-normal text-slate-500">{p.rol}</span>
+          </span>
+        </span>
+      ),
+      items: agenda.filter((i) => i.personaId === p.id),
+    })),
+    { id: null, titulo: <span className="text-slate-500">Sin responsable</span>, items: agenda.filter((i) => !i.personaId) },
+  ]
 
   return (
     <div className="space-y-4">
@@ -79,7 +61,7 @@ export default function Semana() {
           <div className="inline-flex overflow-hidden rounded-md border border-slate-300 bg-white text-sm">
             {(['persona', 'proyecto'] as const).map((v) => (
               <button key={v} onClick={() => setVista(v)} className={`px-3 py-1.5 ${vista === v ? 'bg-indigo-600 text-white' : 'hover:bg-slate-100'}`}>
-                Por {v}
+                {v === 'persona' ? 'Por persona' : 'Matriz por proyecto'}
               </button>
             ))}
           </div>
@@ -93,6 +75,15 @@ export default function Semana() {
         </div>
       </div>
 
+      {vista === 'proyecto' && (
+        <MatrizProyectos
+          proyectos={db.proyectos.filter((p) => p.estado !== 'cerrado')}
+          items={agenda}
+          onAgregar={(proyectoId) => setNuevo({ proyectoId })}
+        />
+      )}
+
+      {vista === 'persona' && (
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {grupos
           .filter((g) => g.id !== null || g.items.length > 0)
@@ -109,11 +100,11 @@ export default function Semana() {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <ListaAgenda items={g.items} mostrarPersona={vista === 'proyecto'} mostrarProyecto={vista === 'persona'} vacio="Nada asignado esta semana." />
+                  <ListaAgenda items={g.items} mostrarPersona={false} vacio="Nada asignado esta semana." />
                 </div>
                 <button
                   className="mt-2 self-start text-xs text-indigo-600 hover:underline"
-                  onClick={() => setNuevo(vista === 'persona' ? { personaId: g.id } : { proyectoId: g.id })}
+                  onClick={() => setNuevo({ personaId: g.id })}
                 >
                   + agregar
                 </button>
@@ -121,6 +112,7 @@ export default function Semana() {
             )
           })}
       </div>
+      )}
 
       {nuevo && <FormItemSemana semana={lunes} personaId={nuevo.personaId ?? null} proyectoId={nuevo.proyectoId ?? null} onCerrar={() => setNuevo(null)} />}
     </div>
