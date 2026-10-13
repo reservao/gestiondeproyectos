@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { useStore } from '../lib/store'
 import type { Persona, Prioridad } from '../lib/types'
 import { PRIORIDADES } from '../lib/types'
@@ -157,6 +157,37 @@ export function BarraProgreso({ valor, color = 'bg-indigo-500' }: { valor: numbe
   )
 }
 
-export function confirmar(msg: string) {
-  return window.confirm(msg)
+/**
+ * Botón que pide confirmación en dos pasos dentro de la propia página
+ * (sin window.confirm, que algunos entornos bloquean).
+ */
+export function BotonConfirmar({
+  children,
+  pregunta,
+  onConfirmar,
+  className = 'btn-danger',
+}: {
+  children: ReactNode
+  pregunta: string
+  onConfirmar: () => void
+  className?: string
+}) {
+  const [preguntando, setPreguntando] = useState(false)
+  if (!preguntando)
+    return (
+      <button type="button" className={className} onClick={() => setPreguntando(true)}>
+        {children}
+      </button>
+    )
+  return (
+    <span className="inline-flex flex-wrap items-center gap-2 rounded-md bg-red-50 px-2 py-1 text-sm text-red-700">
+      {pregunta}
+      <button type="button" className="rounded bg-red-600 px-2 py-0.5 font-medium text-white hover:bg-red-700" onClick={onConfirmar}>
+        Sí
+      </button>
+      <button type="button" className="rounded px-2 py-0.5 text-slate-600 hover:bg-white" onClick={() => setPreguntando(false)}>
+        No
+      </button>
+    </span>
+  )
 }

@@ -14,6 +14,10 @@ App interna para gestionar de forma centralizada los proyectos del equipo y el t
 - **Gantt general**: todos los proyectos activos en una sola línea de tiempo, con filtro por persona.
 - **Equipo**: personas, sus proyectos (como jefe o consultor) y su carga de la semana.
 
+## Probar la demo
+
+`npm run build:demo` genera `demo/gestion-de-proyectos.html`: la app entera en un solo archivo que se puede abrir directamente en el navegador. Funciona en modo demo, con los datos guardados en ese navegador.
+
 ## Probarla en local
 
 ```bash

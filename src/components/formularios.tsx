@@ -17,7 +17,7 @@ import {
   type Proyecto,
   type Tarea,
 } from '../lib/types'
-import { Avatar, Campo, Modal, SelectPersona, SelectProyecto, confirmar } from './ui'
+import { Avatar, Campo, Modal, SelectPersona, SelectProyecto, BotonConfirmar } from './ui'
 
 /** Estructura común: modal + formulario + botones Guardar / Eliminar. */
 function Formulario({
@@ -46,18 +46,15 @@ function Formulario({
         {children}
         <div className="flex items-center justify-between pt-2">
           {onEliminar ? (
-            <button
-              type="button"
-              className="btn-danger"
-              onClick={() => {
-                if (confirmar('¿Eliminar? Esta acción no se puede deshacer.')) {
-                  onEliminar()
-                  onCerrar()
-                }
+            <BotonConfirmar
+              pregunta="¿Eliminar?"
+              onConfirmar={() => {
+                onEliminar()
+                onCerrar()
               }}
             >
               Eliminar
-            </button>
+            </BotonConfirmar>
           ) : (
             <span />
           )}

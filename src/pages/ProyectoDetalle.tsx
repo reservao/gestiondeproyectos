@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { FormActividad, FormEntregable, FormHito, FormProyecto, FormTarea } from '../components/formularios'
 import { Gantt, SelectorEscala, type Escala, type FilaGantt } from '../components/Gantt'
-import { Avatar, Badge, BadgePrioridad, PersonaChip, Vacio, confirmar } from '../components/ui'
+import { Avatar, Badge, BadgePrioridad, PersonaChip, Vacio, BotonConfirmar } from '../components/ui'
 import { resumenProyecto } from '../lib/agenda'
 import { diasEntre, fmt, hoy, relativo } from '../lib/fechas'
 import { useLookups, useStore } from '../lib/store'
@@ -56,17 +56,15 @@ export default function ProyectoDetalle() {
             <button className="btn-secondary" onClick={() => setEditando(true)}>
               Editar proyecto
             </button>
-            <button
-              className="btn-danger"
-              onClick={() => {
-                if (confirmar(`¿Eliminar el proyecto "${p.nombre}" con todos sus hitos, entregables, Gantt y tareas?`)) {
-                  borrarProyecto(p.id)
-                  navigate('/proyectos')
-                }
+            <BotonConfirmar
+              pregunta="¿Eliminar el proyecto con todo su contenido?"
+              onConfirmar={() => {
+                borrarProyecto(p.id)
+                navigate('/proyectos')
               }}
             >
               Eliminar
-            </button>
+            </BotonConfirmar>
           </div>
         </div>
       </div>

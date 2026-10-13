@@ -20,6 +20,32 @@ export interface Backend {
 
 const CLAVE = 'gestiondeproyectos:db'
 
+// Si el navegador no deja usar localStorage (modo privado, etc.), se guarda en memoria.
+const memoria = new Map<string, string>()
+const almacen = {
+  get(k: string) {
+    try {
+      return localStorage.getItem(k)
+    } catch {
+      return memoria.get(k) ?? null
+    }
+  },
+  set(k: string, v: string) {
+    try {
+      localStorage.setItem(k, v)
+    } catch {
+      memoria.set(k, v)
+    }
+  },
+  remove(k: string) {
+    try {
+      localStorage.removeItem(k)
+    } catch {
+      memoria.delete(k)
+    }
+  },
+}
+
 function dbVacia(): DB {
   return Object.fromEntries(COLECCIONES.map((c) => [c, []])) as unknown as DB
 }
@@ -28,17 +54,17 @@ class BackendLocal implements Backend {
   tipo = 'local' as const
 
   private leer(): DB {
-    const crudo = localStorage.getItem(CLAVE)
+    const crudo = almacen.get(CLAVE)
     if (!crudo) {
       const demo = datosDemo()
-      localStorage.setItem(CLAVE, JSON.stringify(demo))
+      almacen.set(CLAVE, JSON.stringify(demo))
       return demo
     }
     return { ...dbVacia(), ...JSON.parse(crudo) }
   }
 
   private escribir(db: DB) {
-    localStorage.setItem(CLAVE, JSON.stringify(db))
+    almacen.set(CLAVE, JSON.stringify(db))
   }
 
   async cargar() {
@@ -69,7 +95,7 @@ class BackendLocal implements Backend {
 }
 
 export function reiniciarDemo() {
-  localStorage.removeItem(CLAVE)
+  almacen.remove(CLAVE)
 }
 
 // ---------- Supabase ----------

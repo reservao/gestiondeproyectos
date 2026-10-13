@@ -1,7 +1,7 @@
 import { NavLink, Route, Routes } from 'react-router-dom'
 import { reiniciarDemo } from './lib/backend'
 import { useStore } from './lib/store'
-import { confirmar } from './components/ui'
+import { BotonConfirmar } from './components/ui'
 import Equipo from './pages/Equipo'
 import GanttGeneral from './pages/GanttGeneral'
 import Inicio from './pages/Inicio'
@@ -43,17 +43,18 @@ export default function App() {
           {backend.tipo === 'local' ? (
             <>
               <p>Modo demo: los datos se guardan solo en este navegador.</p>
-              <button
-                className="mt-1 underline hover:text-slate-600"
-                onClick={() => {
-                  if (confirmar('¿Borrar todos los datos de este navegador y volver a los datos de ejemplo?')) {
+              <div className="mt-1">
+                <BotonConfirmar
+                  className="underline hover:text-slate-600"
+                  pregunta="¿Borrar tus cambios?"
+                  onConfirmar={() => {
                     reiniciarDemo()
                     location.reload()
-                  }
-                }}
-              >
-                Reiniciar datos de ejemplo
-              </button>
+                  }}
+                >
+                  Reiniciar datos de ejemplo
+                </BotonConfirmar>
+              </div>
             </>
           ) : (
             <p>Datos compartidos (Supabase).</p>
