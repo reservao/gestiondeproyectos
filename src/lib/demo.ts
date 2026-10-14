@@ -101,5 +101,31 @@ export function datosDemo(): DB {
     { id: nuevoId(), semana: lunes, personaId: bruno, proyectoId: p1, titulo: 'Consolidar notas de entrevistas', prioridad: 'media' as const, hecho: false },
   ]
 
-  return { personas, proyectos, hitos, entregables, actividades, tareas, itemsSemana }
+  const ahora = new Date().toISOString()
+  const notas = [
+    {
+      id: nuevoId(),
+      ambito: 'proyecto' as const,
+      proyectoId: p1,
+      cliente: null,
+      titulo: 'Reunión de kick off con cliente',
+      contenido:
+        '<h2>Asistentes</h2><ul><li>Ana Pérez (jefa de proyecto)</li><li>Contraparte del cliente: Gerencia de Operaciones</li></ul><h2>Acuerdos</h2><ol><li>Entrevistas a jefaturas durante las 2 primeras semanas.</li><li>El cliente enviará los procedimientos vigentes.</li></ol><p><mark>Pendiente:</mark> confirmar fecha de presentación de diagnóstico.</p>',
+      creada: ahora,
+      actualizada: ahora,
+    },
+    {
+      id: nuevoId(),
+      ambito: 'cliente' as const,
+      proyectoId: p1,
+      cliente: 'Cliente Ejemplo S.A.',
+      titulo: 'Datos de facturación y contactos',
+      contenido:
+        '<p><b>Contacto facturación:</b> área de Finanzas.</p><p>La OC se emite a fin de mes; la factura debe citar el <u>n° de OC</u>.</p><ul><li>Plazo de pago: 30 días</li></ul>',
+      creada: ahora,
+      actualizada: ahora,
+    },
+  ]
+
+  return { personas, proyectos, hitos, entregables, actividades, tareas, itemsSemana, notas }
 }

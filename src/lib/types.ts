@@ -84,6 +84,21 @@ export interface ItemSemana {
   hecho: boolean
 }
 
+/**
+ * Nota estilo cuaderno. Puede ser del proyecto o del cliente; las del cliente
+ * se ven desde todos los proyectos de ese cliente.
+ */
+export interface Nota {
+  id: string
+  ambito: 'proyecto' | 'cliente'
+  proyectoId: string | null
+  cliente: string | null
+  titulo: string
+  contenido: string // HTML con formato básico
+  creada: string // fecha y hora ISO
+  actualizada: string
+}
+
 export interface DB {
   personas: Persona[]
   proyectos: Proyecto[]
@@ -92,6 +107,7 @@ export interface DB {
   actividades: Actividad[]
   tareas: Tarea[]
   itemsSemana: ItemSemana[]
+  notas: Nota[]
 }
 
 export type Coleccion = keyof DB
@@ -105,6 +121,7 @@ export const COLECCIONES: Coleccion[] = [
   'actividades',
   'tareas',
   'itemsSemana',
+  'notas',
 ]
 
 export const ESTADOS_PROYECTO: Record<EstadoProyecto, string> = {

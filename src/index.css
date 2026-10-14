@@ -13,3 +13,14 @@
   .btn-danger { @apply text-red-600 hover:bg-red-50; }
   .card { @apply rounded-lg border border-slate-200 bg-white shadow-sm; }
 }
+
+/* Editor de notas */
+.nota-editor h2 { @apply mt-3 mb-1 text-lg font-semibold text-slate-900; }
+.nota-editor h3 { @apply mt-2 mb-1 text-base font-semibold text-slate-800; }
+.nota-editor h1 { @apply mt-3 mb-1 text-xl font-bold; }
+.nota-editor p, .nota-editor div { @apply my-1; }
+.nota-editor ul { @apply my-1 list-disc pl-6; }
+.nota-editor ol { @apply my-1 list-decimal pl-6; }
+.nota-editor mark { @apply rounded-sm bg-yellow-200 px-0.5; }
+.nota-editor a { @apply text-indigo-600 underline; }
+.nota-editor:empty::before { content: attr(data-placeholder); @apply text-slate-300; }

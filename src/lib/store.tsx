@@ -71,10 +71,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const borrarProyecto = useCallback(
     (id: string) => {
-      const hijas: Coleccion[] = ['hitos', 'entregables', 'actividades', 'tareas', 'itemsSemana']
+      // Las notas del cliente se conservan: pertenecen al cliente, no al proyecto.
+      const hijas: Coleccion[] = ['hitos', 'entregables', 'actividades', 'tareas', 'itemsSemana', 'notas']
       for (const col of hijas) {
-        for (const x of db[col] as { id: string; proyectoId: string | null }[]) {
-          if (x.proyectoId === id) borrar(col, x.id)
+        for (const x of db[col] as { id: string; proyectoId: string | null; ambito?: string }[]) {
+          if (x.proyectoId === id && x.ambito !== 'cliente') borrar(col, x.id)
         }
       }
       borrar('proyectos', id)

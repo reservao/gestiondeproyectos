@@ -108,6 +108,7 @@ const TABLAS: Record<Coleccion, string> = {
   actividades: 'actividades',
   tareas: 'tareas',
   itemsSemana: 'items_semana',
+  notas: 'notas',
 }
 
 const aSnake = (s: string) => s.replace(/[A-Z]/g, (l) => '_' + l.toLowerCase())

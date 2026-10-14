@@ -76,12 +76,23 @@ create table if not exists items_semana (
   hecho boolean not null default false
 );
 
+create table if not exists notas (
+  id uuid primary key,
+  ambito text not null default 'proyecto', -- 'proyecto' o 'cliente'
+  proyecto_id uuid references proyectos(id) on delete set null,
+  cliente text,
+  titulo text not null default '',
+  contenido text not null default '',
+  creada timestamptz not null default now(),
+  actualizada timestamptz not null default now()
+);
+
 -- Acceso: todo el equipo ve y edita todo, pero solo usuarios con sesión iniciada.
 -- (Para una prueba rápida sin login se puede cambiar "authenticated" por "anon".)
 do $$
 declare t text;
 begin
-  foreach t in array array['personas','proyectos','hitos','entregables','actividades','tareas','items_semana'] loop
+  foreach t in array array['personas','proyectos','hitos','entregables','actividades','tareas','items_semana','notas'] loop
     execute format('alter table %I enable row level security', t);
     execute format('drop policy if exists equipo on %I', t);
     execute format('create policy equipo on %I for all to authenticated using (true) with check (true)', t);

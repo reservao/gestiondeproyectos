@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { FormActividad, FormEntregable, FormHito, FormProyecto, FormTarea } from '../components/formularios'
+import { Notas } from '../components/Notas'
 import { Gantt, SelectorEscala, type Escala, type FilaGantt } from '../components/Gantt'
 import { Avatar, Badge, BadgePrioridad, PersonaChip, Vacio, BotonConfirmar } from '../components/ui'
 import { resumenProyecto } from '../lib/agenda'
@@ -15,6 +16,7 @@ const PESTANAS = [
   ['hitos', 'Hitos de gestión'],
   ['entregables', 'Entregables'],
   ['tareas', 'Tareas'],
+  ['notas', 'Notas'],
 ] as const
 type Pestana = (typeof PESTANAS)[number][0]
 
@@ -35,6 +37,9 @@ export default function ProyectoDetalle() {
     )
 
   const r = resumenProyecto(db, p.id)
+  const cantidadNotas = db.notas.filter(
+    (n) => (n.ambito === 'proyecto' && n.proyectoId === p.id) || (n.ambito === 'cliente' && !!p.cliente && n.cliente === p.cliente),
+  ).length
 
   return (
     <div className="space-y-4">
@@ -80,6 +85,7 @@ export default function ProyectoDetalle() {
             {k === 'hitos' && r.hitosVencidos.length > 0 && <span className="ml-1 text-red-600">●</span>}
             {k === 'tareas' && r.tareasAtrasadas.length > 0 && <span className="ml-1 text-red-600">●</span>}
             {k === 'entregables' && r.entregablesAtrasados.length > 0 && <span className="ml-1 text-red-600">●</span>}
+            {k === 'notas' && cantidadNotas > 0 && <span className="ml-1 text-xs text-slate-400">{cantidadNotas}</span>}
           </button>
         ))}
       </nav>
@@ -89,6 +95,7 @@ export default function ProyectoDetalle() {
       {pestana === 'hitos' && <Hitos p={p} />}
       {pestana === 'entregables' && <Entregables p={p} />}
       {pestana === 'tareas' && <Kanban p={p} />}
+      {pestana === 'notas' && <Notas p={p} />}
 
       {editando && <FormProyecto proyecto={p} onCerrar={() => setEditando(false)} />}
     </div>

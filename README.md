@@ -9,6 +9,7 @@ App interna para gestionar de forma centralizada los proyectos del equipo y el t
   - **Gantt**: actividades con responsable y % de avance. Las barras se arrastran para mover fechas y se estiran desde los bordes. Entregables e hitos aparecen como ◆.
   - **Hitos de gestión**: checklist para marcar si se cumplió cada hito, con fecha planificada, fecha real y notas (n° de OC, n° de factura…). Cada proyecto nuevo trae la plantilla: kick off interno, firma de ficha de inicio, creación de PEP, kick off con cliente, OC, factura, cierre y ficha de cierre. Se pueden agregar más (Factura 2, etc.).
   - **Entregables**: qué se entrega, cuándo y quién es responsable.
+  - **Notas**: cuaderno estilo OneNote con páginas, editor con formato (títulos, negrita, resaltado, listas, fecha) y búsqueda. Hay notas del proyecto y notas del cliente; las del cliente se ven desde todos sus proyectos.
   - **Tareas**: kanban (Por hacer / En curso / En revisión / Hecho) con responsable, fecha y prioridad. Las atrasadas se marcan en rojo.
 - **Semana**: lo que toca hacer en la semana, **por persona** o **por proyecto**. Junta lo que viene de los proyectos (actividades de la Gantt, entregables, hitos y tareas) con pendientes que se agregan a mano para esa semana. En la semana actual también aparece lo atrasado.
 - **Gantt general**: todos los proyectos activos en una sola línea de tiempo, con filtro por persona.
