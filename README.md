@@ -15,6 +15,13 @@ App interna para gestionar de forma centralizada los proyectos del equipo y el t
 - **Gantt general**: todos los proyectos activos en una sola línea de tiempo, con filtro por persona.
 - **Equipo**: personas, sus proyectos (como jefe o consultor) y su carga de la semana.
 
+## Versión publicada
+
+La app se publica sola en GitHub Pages con cada cambio que se sube (ver `.github/workflows/pages.yml`):
+**https://reservao.github.io/gestiondeproyectos/**
+
+Para activarlo una vez: en GitHub, **Settings → Pages → Source: GitHub Actions**. Mientras no se configure Supabase, funciona en modo demo (cada persona ve sus propios datos, guardados en su navegador).
+
 ## Probar la demo
 
 `npm run build:demo` genera `demo/gestion-de-proyectos.html`: la app entera en un solo archivo que se puede abrir directamente en el navegador. Funciona en modo demo, con los datos guardados en ese navegador.
