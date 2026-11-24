@@ -4,11 +4,11 @@ import { FormPersona } from '../components/formularios'
 import { Avatar, Badge } from '../components/ui'
 import { agendaSemana } from '../lib/agenda'
 import { hoy, lunesDe } from '../lib/fechas'
-import { useStore } from '../lib/store'
+import { useDbFiltrada } from '../lib/store'
 import type { Persona } from '../lib/types'
 
 export default function Equipo() {
-  const { db } = useStore()
+  const db = useDbFiltrada()
   const [form, setForm] = useState<{ x?: Persona } | null>(null)
   const agenda = agendaSemana(db, lunesDe(hoy()))
 

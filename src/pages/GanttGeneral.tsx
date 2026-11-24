@@ -4,12 +4,13 @@ import { FormActividad, FormEntregable, FormHito } from '../components/formulari
 import { Gantt, SelectorEscala, type Escala, type FilaGantt } from '../components/Gantt'
 import { Avatar } from '../components/ui'
 import { hoy } from '../lib/fechas'
-import { useLookups, useStore } from '../lib/store'
+import { useDbFiltrada, useLookups, useStore } from '../lib/store'
 import type { Actividad, Entregable, Hito } from '../lib/types'
 
 /** Todos los proyectos activos en una sola línea de tiempo. */
 export default function GanttGeneral() {
-  const { db, guardar } = useStore()
+  const { guardar } = useStore()
+  const db = useDbFiltrada()
   const { persona } = useLookups()
   const navigate = useNavigate()
   const [escala, setEscala] = useState<Escala>('semana')

@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FormProyecto } from '../components/formularios'
-import { Avatar, BarraProgreso, Badge } from '../components/ui'
+import { Avatar, BarraProgreso, Badge, BadgeLinea } from '../components/ui'
 import { resumenProyecto } from '../lib/agenda'
 import { fmt } from '../lib/fechas'
-import { useLookups, useStore } from '../lib/store'
+import { useDbFiltrada, useLookups } from '../lib/store'
 import { ESTADOS_PROYECTO, type EstadoProyecto } from '../lib/types'
 
 const COLOR_ESTADO: Record<EstadoProyecto, 'sky' | 'green' | 'amber' | 'slate'> = {
@@ -15,7 +15,7 @@ const COLOR_ESTADO: Record<EstadoProyecto, 'sky' | 'green' | 'amber' | 'slate'> 
 }
 
 export default function Proyectos() {
-  const { db } = useStore()
+  const db = useDbFiltrada()
   const { persona } = useLookups()
   const navigate = useNavigate()
   const [nuevo, setNuevo] = useState(false)
@@ -55,7 +55,10 @@ export default function Proyectos() {
                   <div className="truncate font-semibold">{p.nombre}</div>
                   <div className="truncate text-sm text-slate-500">{p.cliente}</div>
                 </div>
-                <Badge color={COLOR_ESTADO[p.estado]}>{ESTADOS_PROYECTO[p.estado]}</Badge>
+                <div className="flex shrink-0 flex-col items-end gap-1">
+                  <Badge color={COLOR_ESTADO[p.estado]}>{ESTADOS_PROYECTO[p.estado]}</Badge>
+                  <BadgeLinea lineaId={p.lineaId} />
+                </div>
               </div>
               <div className="mt-3 flex items-center gap-1">
                 <Avatar persona={persona(p.jefeId)} size="md" />

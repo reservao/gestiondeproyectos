@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { FormActividad, FormEntregable, FormHito, FormProyecto, FormTarea } from '../components/formularios'
 import { Notas } from '../components/Notas'
 import { Gantt, SelectorEscala, type Escala, type FilaGantt } from '../components/Gantt'
-import { Avatar, Badge, BadgePrioridad, PersonaChip, Vacio, BotonConfirmar } from '../components/ui'
+import { Avatar, Badge, BadgePrioridad, PersonaChip, Vacio, BotonConfirmar, BadgeLinea } from '../components/ui'
 import { resumenProyecto } from '../lib/agenda'
 import { diasEntre, fmt, hoy, relativo } from '../lib/fechas'
 import { useLookups, useStore } from '../lib/store'
@@ -54,7 +54,8 @@ export default function ProyectoDetalle() {
               {p.nombre}
             </h1>
             <p className="text-sm text-slate-500">
-              {p.cliente} · {ESTADOS_PROYECTO[p.estado]} · {fmt(p.fechaInicio, 'd MMM yyyy')} → {fmt(p.fechaFin, 'd MMM yyyy')}
+              <BadgeLinea lineaId={p.lineaId} /> · {p.cliente} · {ESTADOS_PROYECTO[p.estado]} · {fmt(p.fechaInicio, 'd MMM yyyy')} →{' '}
+              {fmt(p.fechaFin, 'd MMM yyyy')}
             </p>
           </div>
           <div className="flex gap-2">

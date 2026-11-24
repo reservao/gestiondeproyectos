@@ -11,6 +11,7 @@ import {
   type EstadoProyecto,
   type EstadoTarea,
   type Hito,
+  type LineaNegocio,
   type ItemSemana,
   type Persona,
   type Prioridad,
@@ -77,13 +78,15 @@ const Fila2 = ({ children }: { children: ReactNode }) => <div className="grid gr
 // ---------- Proyecto ----------
 
 export function FormProyecto({ proyecto, onCerrar, onCreado }: { proyecto?: Proyecto; onCerrar: () => void; onCreado?: (id: string) => void }) {
-  const { db, guardar } = useStore()
+  const { db, guardar, lineaFiltro } = useStore()
+  const [nuevaLinea, setNuevaLinea] = useState<string | null>(db.lineas.length === 0 ? '' : null)
   const [p, setP] = useState<Proyecto>(
     proyecto ?? {
       id: nuevoId(),
       codigo: '',
       nombre: '',
       cliente: '',
+      lineaId: lineaFiltro && db.lineas.some((l) => l.id === lineaFiltro) ? lineaFiltro : null,
       jefeId: null,
       consultoresIds: [],
       fechaInicio: hoy(),
@@ -103,7 +106,13 @@ export function FormProyecto({ proyecto, onCerrar, onCreado }: { proyecto?: Proy
       onCerrar={onCerrar}
       ancho="max-w-2xl"
       onGuardar={() => {
-        guardar('proyectos', p)
+        let lineaId = p.lineaId
+        if (nuevaLinea !== null && nuevaLinea.trim()) {
+          const l: LineaNegocio = { id: nuevoId(), nombre: nuevaLinea.trim(), color: COLORES[db.lineas.length % COLORES.length] }
+          guardar('lineas', l)
+          lineaId = l.id
+        }
+        guardar('proyectos', { ...p, lineaId })
         if (!proyecto && conPlantilla) hitosPlantilla(p.id, p.fechaInicio, p.fechaFin).forEach((h) => guardar('hitos', h))
         if (!proyecto) onCreado?.(p.id)
       }}
@@ -116,6 +125,40 @@ export function FormProyecto({ proyecto, onCerrar, onCreado }: { proyecto?: Proy
           <input className="input" required autoFocus value={p.nombre} onChange={(e) => set('nombre', e.target.value)} />
         </Campo>
       </div>
+      <Campo label="Línea de negocio">
+        {nuevaLinea === null ? (
+          <select
+            className="input"
+            required
+            value={p.lineaId ?? ''}
+            onChange={(e) => (e.target.value === '__nueva__' ? setNuevaLinea('') : set('lineaId', e.target.value || null))}
+          >
+            <option value="">Selecciona una línea…</option>
+            {db.lineas.map((l) => (
+              <option key={l.id} value={l.id}>
+                {l.nombre}
+              </option>
+            ))}
+            <option value="__nueva__">+ Nueva línea de negocio…</option>
+          </select>
+        ) : (
+          <div className="flex gap-2">
+            <input
+              className="input"
+              required
+              autoFocus={db.lineas.length > 0}
+              placeholder="Nombre de la nueva línea de negocio"
+              value={nuevaLinea}
+              onChange={(e) => setNuevaLinea(e.target.value)}
+            />
+            {db.lineas.length > 0 && (
+              <button type="button" className="btn-secondary shrink-0" onClick={() => setNuevaLinea(null)}>
+                Elegir existente
+              </button>
+            )}
+          </div>
+        )}
+      </Campo>
       <Fila2>
         <Campo label="Cliente">
           <input className="input" value={p.cliente} onChange={(e) => set('cliente', e.target.value)} />
@@ -482,5 +525,68 @@ export function FormPersona({ persona, onCerrar }: { persona?: Persona; onCerrar
         </div>
       </div>
     </Formulario>
+  )
+}
+
+// ---------- Líneas de negocio ----------
+
+export function FormLineas({ onCerrar }: { onCerrar: () => void }) {
+  const { db, guardar, borrar, lineaFiltro, setLineaFiltro } = useStore()
+  const [nombre, setNombre] = useState('')
+
+  const agregar = (e: FormEvent) => {
+    e.preventDefault()
+    if (!nombre.trim()) return
+    guardar('lineas', { id: nuevoId(), nombre: nombre.trim(), color: COLORES[db.lineas.length % COLORES.length] })
+    setNombre('')
+  }
+
+  const eliminar = (l: LineaNegocio) => {
+    // Los proyectos de esa línea quedan sin línea asignada.
+    db.proyectos.filter((p) => p.lineaId === l.id).forEach((p) => guardar('proyectos', { ...p, lineaId: null }))
+    if (lineaFiltro === l.id) setLineaFiltro(null)
+    borrar('lineas', l.id)
+  }
+
+  return (
+    <Modal titulo="Líneas de negocio" abierto onCerrar={onCerrar}>
+      <ul className="mb-4 divide-y divide-slate-100">
+        {db.lineas.map((l) => {
+          const n = db.proyectos.filter((p) => p.lineaId === l.id).length
+          return (
+            <li key={l.id} className="flex flex-wrap items-center gap-2 py-2">
+              <div className="flex gap-1">
+                {COLORES.slice(0, 6).map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    title="Cambiar color"
+                    onClick={() => guardar('lineas', { ...l, color: c })}
+                    className={`h-4 w-4 rounded-full ${l.color === c ? 'ring-2 ring-slate-700 ring-offset-1' : ''}`}
+                    style={{ background: c }}
+                  />
+                ))}
+              </div>
+              <input
+                className="input min-w-0 flex-1"
+                value={l.nombre}
+                onChange={(e) => guardar('lineas', { ...l, nombre: e.target.value })}
+                aria-label="Nombre de la línea"
+              />
+              <span className="w-20 text-xs text-slate-500">{n} proyecto(s)</span>
+              <BotonConfirmar pregunta={n ? `¿Eliminar? ${n} proyecto(s) quedarán sin línea` : '¿Eliminar?'} onConfirmar={() => eliminar(l)}>
+                Eliminar
+              </BotonConfirmar>
+            </li>
+          )
+        })}
+        {db.lineas.length === 0 && <li className="py-4 text-center text-sm text-slate-400">Aún no hay líneas de negocio.</li>}
+      </ul>
+      <form onSubmit={agregar} className="flex gap-2">
+        <input className="input" placeholder="Nueva línea de negocio" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+        <button className="btn-primary shrink-0">Agregar</button>
+      </form>
+      <p className="mt-3 text-xs text-slate-500">Los cambios se guardan al momento.</p>
+    </Modal>
   )
 }

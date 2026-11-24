@@ -5,14 +5,14 @@ import { MatrizProyectos } from '../components/MatrizProyectos'
 import { Avatar } from '../components/ui'
 import { agendaSemana, type ItemAgenda } from '../lib/agenda'
 import { fmt, fmtSemana, hoy, lunesDe, sumarDias } from '../lib/fechas'
-import { useStore } from '../lib/store'
+import { useDbFiltrada } from '../lib/store'
 
 /**
  * Planificación semanal: junta lo que viene de los proyectos (Gantt, entregables,
  * hitos, tareas) y lo que se agrega a mano para la semana, por persona o por proyecto.
  */
 export default function Semana() {
-  const { db } = useStore()
+  const db = useDbFiltrada()
   const [lunes, setLunes] = useState(lunesDe(hoy()))
   const [vista, setVista] = useState<'persona' | 'proyecto'>('persona')
   const [soloPendientes, setSoloPendientes] = useState(false)

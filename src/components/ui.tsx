@@ -191,3 +191,16 @@ export function BotonConfirmar({
     </span>
   )
 }
+
+/** Etiqueta con el color y nombre de la línea de negocio del proyecto. */
+export function BadgeLinea({ lineaId }: { lineaId: string | null | undefined }) {
+  const { db } = useStore()
+  const l = lineaId ? db.lineas.find((x) => x.id === lineaId) : undefined
+  if (!l) return <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] text-slate-400 ring-1 ring-slate-200">Sin línea</span>
+  return (
+    <span className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium text-slate-700 ring-1 ring-slate-200">
+      <span className="h-2 w-2 rounded-full" style={{ background: l.color }} />
+      {l.nombre}
+    </span>
+  )
+}

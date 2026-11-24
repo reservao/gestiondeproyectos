@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { COLOR_TIPO, EditorAgenda, useAlternar } from './Agenda'
-import { Avatar, Badge, BadgePrioridad } from './ui'
+import { Avatar, Badge, BadgeLinea, BadgePrioridad } from './ui'
 import { ETIQUETA_TIPO, type ItemAgenda } from '../lib/agenda'
 import { fmt } from '../lib/fechas'
 import { useLookups } from '../lib/store'
@@ -51,6 +51,9 @@ export function MatrizProyectos({
                       <div className="text-xs text-slate-400">{p.codigo}</div>
                       <div className="font-semibold">{p.nombre}</div>
                       <div className="text-xs text-slate-500">{p.cliente}</div>
+                      <div className="mt-1">
+                        <BadgeLinea lineaId={p.lineaId} />
+                      </div>
                     </Link>
                   ) : (
                     <div className="font-semibold text-slate-500">General / sin proyecto</div>

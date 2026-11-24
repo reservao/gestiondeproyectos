@@ -32,6 +32,13 @@ export function datosDemo(): DB {
   ]
   const [ana, bruno, carla, diego] = personas.map((p) => p.id)
 
+  // Líneas de negocio de ejemplo: se pueden renombrar o borrar.
+  const lineas = [
+    { id: nuevoId(), nombre: 'Consultoría', color: '#6366f1' },
+    { id: nuevoId(), nombre: 'Capacitación', color: '#f59e0b' },
+    { id: nuevoId(), nombre: 'Tecnología', color: '#10b981' },
+  ]
+
   const p1 = nuevoId()
   const p2 = nuevoId()
   const proyectos = [
@@ -40,6 +47,7 @@ export function datosDemo(): DB {
       codigo: 'PRY-001',
       nombre: 'Diagnóstico de procesos',
       cliente: 'Cliente Ejemplo S.A.',
+      lineaId: lineas[0].id,
       jefeId: ana,
       consultoresIds: [bruno, carla],
       fechaInicio: d(-20),
@@ -52,6 +60,7 @@ export function datosDemo(): DB {
       codigo: 'PRY-002',
       nombre: 'Implementación de tablero de control',
       cliente: 'Otra Empresa Ltda.',
+      lineaId: lineas[2].id,
       jefeId: diego,
       consultoresIds: [carla],
       fechaInicio: d(-5),
@@ -127,5 +136,5 @@ export function datosDemo(): DB {
     },
   ]
 
-  return { personas, proyectos, hitos, entregables, actividades, tareas, itemsSemana, notas }
+  return { lineas, personas, proyectos, hitos, entregables, actividades, tareas, itemsSemana, notas }
 }

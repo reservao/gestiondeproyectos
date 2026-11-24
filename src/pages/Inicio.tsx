@@ -1,16 +1,16 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ListaAgenda } from '../components/Agenda'
-import { Avatar, BarraProgreso, Badge } from '../components/ui'
+import { Avatar, BarraProgreso, Badge, BadgeLinea } from '../components/ui'
 import { agendaSemana, resumenProyecto } from '../lib/agenda'
 import { fmt, fmtSemana, hoy, lunesDe, relativo, sumarDias } from '../lib/fechas'
-import { useLookups, useStore } from '../lib/store'
+import { useDbFiltrada, useLookups } from '../lib/store'
 import { ESTADOS_PROYECTO } from '../lib/types'
 
 const SALUD = { verde: 'bg-emerald-500', amarillo: 'bg-amber-400', rojo: 'bg-red-500' }
 
 export default function Inicio() {
-  const { db } = useStore()
+  const db = useDbFiltrada()
   const { persona } = useLookups()
   const [semana, setSemana] = useState<'actual' | 'proxima'>('actual')
   const lunes = semana === 'actual' ? lunesDe(hoy()) : sumarDias(lunesDe(hoy()), 7)
@@ -87,7 +87,7 @@ export default function Inicio() {
                       </span>
                     </Link>
                     <div className="pl-4.5 text-xs text-slate-500">
-                      {p.cliente} · {ESTADOS_PROYECTO[p.estado]}
+                      {p.cliente} · {ESTADOS_PROYECTO[p.estado]} <BadgeLinea lineaId={p.lineaId} />
                     </div>
                   </td>
                   <td className="px-3">

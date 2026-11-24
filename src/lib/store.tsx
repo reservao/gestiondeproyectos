@@ -10,6 +10,18 @@ interface Store {
   guardar<C extends Coleccion>(col: C, item: Entidad<C>): void
   borrar(col: Coleccion, id: string): void
   borrarProyecto(id: string): void
+  /** Línea de negocio elegida en el filtro general (null = todas). */
+  lineaFiltro: string | null
+  setLineaFiltro(id: string | null): void
+}
+
+const CLAVE_FILTRO = 'gestiondeproyectos:linea'
+const leerFiltro = () => {
+  try {
+    return localStorage.getItem(CLAVE_FILTRO)
+  } catch {
+    return null
+  }
 }
 
 const Ctx = createContext<Store | null>(null)
@@ -21,12 +33,23 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [db, setDb] = useState<DB>(vacia)
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [lineaFiltro, setLineaFiltroState] = useState<string | null>(leerFiltro)
+  const setLineaFiltro = useCallback((id: string | null) => {
+    setLineaFiltroState(id)
+    try {
+      if (id) localStorage.setItem(CLAVE_FILTRO, id)
+      else localStorage.removeItem(CLAVE_FILTRO)
+    } catch {
+      // sin almacenamiento: el filtro dura solo mientras la página esté abierta
+    }
+  }, [])
 
   const recargar = useCallback(() => {
     backend
       .cargar()
       .then((d) => {
-        setDb(d)
+        // Datos guardados antes de existir las líneas de negocio.
+        setDb({ ...d, lineas: d.lineas ?? [], proyectos: d.proyectos.map((p) => ({ ...p, lineaId: p.lineaId ?? null })) })
         setError(null)
       })
       .catch((e: Error) => setError(e.message))
@@ -84,8 +107,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   )
 
   const valor = useMemo(
-    () => ({ db, cargando, error, backend, guardar, borrar, borrarProyecto }),
-    [db, cargando, error, backend, guardar, borrar, borrarProyecto],
+    () => ({ db, cargando, error, backend, guardar, borrar, borrarProyecto, lineaFiltro, setLineaFiltro }),
+    [db, cargando, error, backend, guardar, borrar, borrarProyecto, lineaFiltro, setLineaFiltro],
   )
 
   return <Ctx.Provider value={valor}>{children}</Ctx.Provider>
@@ -108,4 +131,29 @@ export function useLookups() {
       proyecto: (id: string | null | undefined) => (id ? proyectos.get(id) : undefined),
     }
   }, [db.personas, db.proyectos])
+}
+
+/**
+ * Los datos visibles según el filtro de línea de negocio: solo los proyectos de esa
+ * línea y lo que cuelga de ellos. Los pendientes sin proyecto se ven solo con "Todas".
+ */
+export function useDbFiltrada(): DB {
+  const { db, lineaFiltro } = useStore()
+  return useMemo(() => {
+    const linea = lineaFiltro && db.lineas.some((l) => l.id === lineaFiltro) ? lineaFiltro : null
+    if (!linea) return db
+    const proyectos = db.proyectos.filter((p) => p.lineaId === linea)
+    const ids = new Set(proyectos.map((p) => p.id))
+    const dePr = <T extends { proyectoId: string | null }>(xs: T[]) => xs.filter((x) => !!x.proyectoId && ids.has(x.proyectoId))
+    return {
+      ...db,
+      proyectos,
+      hitos: dePr(db.hitos),
+      entregables: dePr(db.entregables),
+      actividades: dePr(db.actividades),
+      tareas: dePr(db.tareas),
+      itemsSemana: dePr(db.itemsSemana),
+      notas: dePr(db.notas),
+    }
+  }, [db, lineaFiltro])
 }

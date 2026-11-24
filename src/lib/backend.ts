@@ -101,6 +101,7 @@ export function reiniciarDemo() {
 // ---------- Supabase ----------
 
 const TABLAS: Record<Coleccion, string> = {
+  lineas: 'lineas_negocio',
   personas: 'personas',
   proyectos: 'proyectos',
   hitos: 'hitos',

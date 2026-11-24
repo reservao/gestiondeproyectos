@@ -9,11 +9,18 @@ create table if not exists personas (
   color text not null default '#6366f1'
 );
 
+create table if not exists lineas_negocio (
+  id uuid primary key,
+  nombre text not null,
+  color text not null default '#6366f1'
+);
+
 create table if not exists proyectos (
   id uuid primary key,
   codigo text not null default '',
   nombre text not null,
   cliente text not null default '',
+  linea_id uuid references lineas_negocio(id) on delete set null,
   jefe_id uuid references personas(id) on delete set null,
   consultores_ids uuid[] not null default '{}',
   fecha_inicio date not null,
@@ -21,6 +28,8 @@ create table if not exists proyectos (
   estado text not null default 'planificacion',
   descripcion text not null default ''
 );
+
+alter table proyectos add column if not exists linea_id uuid references lineas_negocio(id) on delete set null;
 
 create table if not exists hitos (
   id uuid primary key,
@@ -92,7 +101,7 @@ create table if not exists notas (
 do $$
 declare t text;
 begin
-  foreach t in array array['personas','proyectos','hitos','entregables','actividades','tareas','items_semana','notas'] loop
+  foreach t in array array['lineas_negocio','personas','proyectos','hitos','entregables','actividades','tareas','items_semana','notas'] loop
     execute format('alter table %I enable row level security', t);
     execute format('drop policy if exists equipo on %I', t);
     execute format('create policy equipo on %I for all to authenticated using (true) with check (true)', t);

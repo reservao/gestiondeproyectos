@@ -7,6 +7,12 @@ export interface Persona {
   color: string
 }
 
+export interface LineaNegocio {
+  id: string
+  nombre: string
+  color: string
+}
+
 export type EstadoProyecto = 'planificacion' | 'en_curso' | 'pausado' | 'cerrado'
 
 export interface Proyecto {
@@ -14,6 +20,7 @@ export interface Proyecto {
   codigo: string
   nombre: string
   cliente: string
+  lineaId: string | null
   jefeId: string | null
   consultoresIds: string[]
   fechaInicio: string
@@ -100,6 +107,7 @@ export interface Nota {
 }
 
 export interface DB {
+  lineas: LineaNegocio[]
   personas: Persona[]
   proyectos: Proyecto[]
   hitos: Hito[]
@@ -114,6 +122,7 @@ export type Coleccion = keyof DB
 export type Entidad<C extends Coleccion> = DB[C][number]
 
 export const COLECCIONES: Coleccion[] = [
+  'lineas',
   'personas',
   'proyectos',
   'hitos',
