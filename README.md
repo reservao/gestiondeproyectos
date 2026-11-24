@@ -8,6 +8,7 @@ App interna para gestionar de forma centralizada los proyectos del equipo y el t
 - **Líneas de negocio**: cada proyecto pertenece a una línea (obligatoria al crearlo). El filtro del menú lateral muestra solo una línea en todas las pantallas. Las líneas se administran con el botón ⚙ junto al filtro.
 - **Proyectos**: código, cliente, fechas, estado, jefe de proyecto y consultores. Cada proyecto tiene:
   - **Gantt**: actividades con responsable y % de avance. Las barras se arrastran para mover fechas y se estiran desde los bordes. Entregables e hitos aparecen como ◆.
+  - **Compartir con cliente**: desde la pestaña Gantt se genera un enlace de solo lectura con la Gantt completa (actividades, entregables e hitos). Los datos viajan dentro del enlace, así que muestra el estado del momento en que se generó.
   - **Hitos de gestión**: checklist para marcar si se cumplió cada hito, con fecha planificada, fecha real y notas (n° de OC, n° de factura…). Cada proyecto nuevo trae la plantilla: kick off interno, firma de ficha de inicio, creación de PEP, kick off con cliente, OC, factura, cierre y ficha de cierre. Se pueden agregar más (Factura 2, etc.).
   - **Entregables**: qué se entrega, cuándo y quién es responsable.
   - **Notas**: cuaderno estilo OneNote con páginas, editor con formato (títulos, negrita, resaltado, listas, fecha) y búsqueda. Hay notas del proyecto y notas del cliente; las del cliente se ven desde todos sus proyectos.

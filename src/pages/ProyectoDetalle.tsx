@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { FormActividad, FormEntregable, FormHito, FormProyecto, FormTarea } from '../components/formularios'
 import { Notas } from '../components/Notas'
+import { ModalCompartir } from '../components/ModalCompartir'
 import { Gantt, SelectorEscala, type Escala, type FilaGantt } from '../components/Gantt'
 import { Avatar, Badge, BadgePrioridad, PersonaChip, Vacio, BotonConfirmar, BadgeLinea } from '../components/ui'
 import { resumenProyecto } from '../lib/agenda'
@@ -196,6 +197,7 @@ function GanttProyecto({ p }: { p: Proyecto }) {
   const { db, guardar } = useStore()
   const { persona } = useLookups()
   const [escala, setEscala] = useState<Escala>('semana')
+  const [compartir, setCompartir] = useState(false)
   const [form, setForm] = useState<
     { tipo: 'actividad'; x?: Actividad } | { tipo: 'entregable'; x?: Entregable } | { tipo: 'hito'; x?: Hito } | null
   >(null)
@@ -261,11 +263,15 @@ function GanttProyecto({ p }: { p: Proyecto }) {
         </button>
         <span className="ml-auto text-xs text-slate-500">Arrastra las barras para mover fechas, o sus bordes para alargarlas.</span>
         <SelectorEscala escala={escala} onChange={setEscala} />
+        <button className="btn-secondary" onClick={() => setCompartir(true)}>
+          🔗 Compartir con cliente
+        </button>
       </div>
       <Gantt filas={filas} escala={escala} desde={p.fechaInicio} hasta={p.fechaFin} />
       <p className="text-xs text-slate-500">
         ◆ relleno = cumplido / entregado · ◇ vacío = pendiente · rojo = atrasado · línea roja vertical = hoy
       </p>
+      {compartir && <ModalCompartir p={p} onCerrar={() => setCompartir(false)} />}
       {form?.tipo === 'actividad' && <FormActividad actividad={form.x} proyectoId={p.id} onCerrar={() => setForm(null)} />}
       {form?.tipo === 'entregable' && <FormEntregable entregable={form.x} proyectoId={p.id} onCerrar={() => setForm(null)} />}
       {form?.tipo === 'hito' && <FormHito hito={form.x} proyectoId={p.id} onCerrar={() => setForm(null)} />}

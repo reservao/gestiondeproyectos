@@ -24,3 +24,8 @@
 .nota-editor mark { @apply rounded-sm bg-yellow-200 px-0.5; }
 .nota-editor a { @apply text-indigo-600 underline; }
 .nota-editor:empty::before { content: attr(data-placeholder); @apply text-slate-300; }
+
+@media print {
+  body { background: white; }
+  .card { box-shadow: none; }
+}
