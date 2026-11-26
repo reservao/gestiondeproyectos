@@ -39,13 +39,15 @@ Sin configurar nada, la app funciona en **modo demo**: guarda los datos en el na
 
 ## Usarla en equipo (datos compartidos con Supabase)
 
+Para el piloto actual, seguir la guía [docs/piloto.md](docs/piloto.md) (Supabase y cuentas con correo y contraseña). Resumen general:
+
 1. Crear un proyecto gratuito en [supabase.com](https://supabase.com).
 2. En **SQL Editor**, ejecutar [`supabase/schema.sql`](supabase/schema.sql).
 3. Copiar `.env.example` a `.env` y completar `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`. Están en Project Settings → API.
 4. En Authentication → URL Configuration, agregar la URL donde se publique la app.
 5. `npm run build` y publicar la carpeta `dist/`, por ejemplo en Vercel, Netlify o GitHub Pages.
 
-Cada persona entra con un enlace que le llega al correo. Los cambios de uno se ven en tiempo real en las pantallas de los demás.
+Cada persona entra con correo y contraseña; las cuentas las crea el administrador en Supabase. Los cambios de uno se ven en tiempo real en las pantallas de los demás.
 
 ## Stack
 
@@ -54,4 +56,5 @@ React + TypeScript + Vite, Tailwind CSS, date-fns y Supabase (opcional). La Gant
 ## Documentación
 
 - [Investigación de alternativas](docs/investigacion-alternativas.md)
+- [Puesta en marcha del piloto](docs/piloto.md)
 - [Handoff y plan del hub de herramientas](docs/handoff.md)
