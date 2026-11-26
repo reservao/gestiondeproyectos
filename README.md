@@ -54,3 +54,4 @@ React + TypeScript + Vite, Tailwind CSS, date-fns y Supabase (opcional). La Gant
 ## Documentación
 
 - [Investigación de alternativas](docs/investigacion-alternativas.md)
+- [Handoff y plan del hub de herramientas](docs/handoff.md)
