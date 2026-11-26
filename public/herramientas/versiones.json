@@ -1,0 +1,12 @@
+{
+  "equipo-tct": {
+    "repo": "https://github.com/reservao/EquipoTCT",
+    "commit": "e65ef8634ef0534c8eb2db08902229b45170507f",
+    "fecha": "2026-11-25"
+  },
+  "analizador-encuestas": {
+    "repo": "https://github.com/reservao/Analizador-de-Encuestas",
+    "commit": "f326084e0342da588102c5ca2e0f342974f2b2a4",
+    "fecha": "2026-11-20"
+  }
+}
