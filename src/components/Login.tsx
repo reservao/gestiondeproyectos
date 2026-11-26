@@ -3,7 +3,7 @@ import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/backend'
 import { Campo, Modal } from './ui'
 
-const LARGO_MINIMO = 8
+const LARGO_MINIMO = 6
 
 /** Traduce los errores de Supabase que puede ver una persona. */
 function traducirError(mensaje: string) {
