@@ -16,6 +16,20 @@ App interna para gestionar de forma centralizada los proyectos del equipo y el t
 - **Semana**: lo que toca hacer en la semana, **por persona** o **por proyecto**. Junta lo que viene de los proyectos (actividades de la Gantt, entregables, hitos y tareas) con pendientes que se agregan a mano para esa semana. En la semana actual también aparece lo atrasado.
 - **Gantt general**: todos los proyectos activos en una sola línea de tiempo, con filtro por persona.
 - **Equipo**: personas, sus proyectos (como jefe o consultor) y su carga de la semana.
+- **Herramientas** (menú lateral): **Equipo TCT** y **Analizador de Encuestas** se usan dentro de la app; **Solicitudes de Diseño** se abre en otra pestaña con su propio inicio de sesión. Todas las personas con cuenta ven todas las herramientas.
+
+## Herramientas integradas
+
+Equipo TCT y Analizador de Encuestas viven en sus propios repositorios. La app guarda una copia fija de cada una en `public/herramientas/<slug>/`, con el commit de origen anotado en `public/herramientas/versiones.json`. La lista del menú está en `src/lib/herramientas.ts`.
+
+Para traer la última versión de una herramienta:
+
+```bash
+npm run herramientas                  # todas
+npm run herramientas -- equipo-tct    # solo una
+```
+
+Revisar que funcione (`npm run dev`) y subir el cambio como cualquier otro. Son páginas que procesan los archivos en el navegador y no guardan datos; sus archivos se pueden abrir sin iniciar sesión, igual que en sus repositorios públicos.
 
 ## Versión publicada
 
