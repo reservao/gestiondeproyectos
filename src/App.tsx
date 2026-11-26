@@ -2,6 +2,7 @@ import { NavLink, Route, Routes } from 'react-router-dom'
 import { reiniciarDemo } from './lib/backend'
 import { useStore } from './lib/store'
 import { BotonConfirmar } from './components/ui'
+import { MiCuenta } from './components/Login'
 import { FormLineas } from './components/formularios'
 import { useState } from 'react'
 import Equipo from './pages/Equipo'
@@ -67,7 +68,7 @@ export default function App() {
             </NavLink>
           ))}
         </nav>
-        <div className="mt-auto hidden p-4 text-[11px] text-slate-400 md:block">
+        <div className={`mt-auto px-4 pb-3 text-[11px] text-slate-400 md:block md:p-4 ${backend.tipo === 'local' ? 'hidden' : ''}`}>
           {backend.tipo === 'local' ? (
             <>
               <p>Modo demo: los datos se guardan solo en este navegador.</p>
@@ -85,7 +86,10 @@ export default function App() {
               </div>
             </>
           ) : (
-            <p>Datos compartidos (Supabase).</p>
+            <>
+              <p className="hidden md:block">Datos compartidos (Supabase).</p>
+              <MiCuenta />
+            </>
           )}
         </div>
       </aside>

@@ -105,6 +105,8 @@ begin
     execute format('alter table %I enable row level security', t);
     execute format('drop policy if exists equipo on %I', t);
     execute format('create policy equipo on %I for all to authenticated using (true) with check (true)', t);
+    execute format('grant select, insert, update, delete on table %I to authenticated', t);
+    execute format('revoke all on table %I from anon', t);
     begin
       execute format('alter publication supabase_realtime add table %I', t);
     exception when duplicate_object then null;

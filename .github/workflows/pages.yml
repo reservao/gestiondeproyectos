@@ -1,5 +1,5 @@
 # Publica la app en GitHub Pages cada vez que se suben cambios.
-# Sin variables de Supabase, la app funciona en modo demo (datos en el navegador).
+# Con las variables de Supabase del paso de build, la app usa los datos compartidos.
 name: Publicar en GitHub Pages
 
 on:
@@ -27,6 +27,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+        env:
+          # Proyecto de Supabase del piloto. Ambos valores son públicos por diseño
+          # (quedan dentro de la app que descarga el navegador); la seguridad la dan
+          # el registro desactivado y las políticas de la base (ver docs/piloto.md).
+          VITE_SUPABASE_URL: https://flcnrkxypihxkaqgcrad.supabase.co
+          VITE_SUPABASE_ANON_KEY: sb_publishable_Y5lr_jfBn_Z3xUoVXUM89Q_IDCfTxRa
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
