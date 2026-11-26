@@ -29,7 +29,7 @@ Durante el piloto todas las personas con cuenta ven y editan todo. No hay roles.
 **Authentication → Sign In / Providers** (en algunas versiones, **Authentication → Providers**):
 
 - Desactivar **Allow new users to sign up**. Es la protección principal: solo entra quien tenga una cuenta creada por el administrador.
-- En el proveedor **Email**: dejarlo activado, **Minimum password length** en `8` y **Secure password change** desactivado.
+- En el proveedor **Email**: dejarlo activado, **Minimum password length** en `6` y **Secure password change** desactivado.
 
 ## 4. Conectar la app con Supabase
 
@@ -46,7 +46,7 @@ Ambos datos son públicos por diseño: cualquier app web que use Supabase los ll
 
 Por cada persona: **Authentication → Users → Add user → Create new user**.
 
-- Correo y una contraseña inicial (mínimo 8 caracteres).
+- Correo y una contraseña inicial (mínimo 6 caracteres).
 - Marcar **Auto Confirm User**.
 
 Enviar a cada persona su contraseña inicial por un canal privado y pedirle que la cambie al entrar (menú lateral → **Cambiar contraseña**).
